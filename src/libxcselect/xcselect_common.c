@@ -31,13 +31,13 @@ bool path_exists(char *path)
 XC_HIDDEN
 bool path_contains_xcrun(const char *path)
 {
-	char buffer[1024];
+	char buffer[MAXPATHLEN];
 	struct stat st;
-	path_join(buffer, 1024, path, "usr/lib/libxcrun.dylib");
+	path_join(buffer, MAXPATHLEN, path, "usr/lib/libxcrun.dylib");
 	if(!stat(buffer,&st)&&(st.st_mode&0xF000)==0x8000) {
 		return true;
 	}
-	path_join(buffer, 1024, path, "usr/bin/xcrun");
+	path_join(buffer, MAXPATHLEN, path, "usr/bin/xcrun");
 	if(stat(buffer,&st))return false;
 	if((st.st_mode&0xF000)==0x8000) {
 		return (st.st_mode>>6)&1;
@@ -65,9 +65,20 @@ XC_HIDDEN
 bool path_is_dir(const char *path)
 {
 	struct stat st;
-	bool r=stat(path, &st);
-	if(!r)return r;
+	bool r = stat(path, &st);
+	if(!r) return r;
 	return S_ISDIR(st.st_mode);
+}
+
+XC_HIDDEN
+bool str_endswith(const char *str, const char *end)
+{
+	size_t str_size = strlen(str);
+	size_t end_size = strlen(end);
+	if ((str_size < end_size) || (memcmp(str + (str_size - end_size), end, end_size + 1) != 0)) {
+		return false;
+	}
+	return true;
 }
 
 XC_HIDDEN
