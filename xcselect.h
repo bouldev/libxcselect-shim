@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/param.h>
-//#include <CoreFoundation/CFBase.h>
+#include <CoreFoundation/CFBase.h>
 
 #define XC_EXPORT __attribute__((visibility("default")))
 #define XC_HIDDEN __attribute__((visibility("hidden")))
@@ -16,6 +16,12 @@ typedef struct xcselect_manpaths {
 	uint32_t count;
 } xcselect_manpaths;
 
+typedef enum : uint32_t {
+	XCSELECT_HOST_SDK_POLICY_MATCHING_PREFERRED = 1,
+	XCSELECT_HOST_SDK_POLICY_MATCHING_ONLY,
+	XCSELECT_HOST_SDK_POLICY_LATEST
+} xcselect_host_sdk_policy_t;
+
 XC_EXPORT bool xcselect_bundle_is_developer_tool(char *path);
 XC_EXPORT bool xcselect_developer_dir_matches_path(const char *developer_dir, const char *path);
 XC_EXPORT bool xcselect_get_developer_dir_path(char *buffer, int buffer_size,
@@ -25,8 +31,9 @@ XC_EXPORT bool xcselect_find_developer_contents_from_path(char *path, char *buff
 				size_t buffer_size, bool *was_cltools);
 XC_EXPORT xcselect_manpaths *xcselect_get_manpaths(char *sysroot);
 XC_EXPORT char *xcselect_get_version(void);
-//XC_EXPORT errno_t xcselect_host_sdk_path(/*xcselect_host_sdk_policy_t*/int sdk_policy,
-//				char * __nullable * __nonnull path);
+XC_EXPORT errno_t xcselect_host_sdk_path(xcselect_host_sdk_policy_t sdk_policy,
+				char **path);
+//				char * __nullable * __nonnull path); // No idea on this
 XC_EXPORT void xcselect_manpaths_free(xcselect_manpaths *xcp);
 XC_EXPORT uint32_t xcselect_manpaths_get_num_paths(xcselect_manpaths *xcp);
 XC_EXPORT const char *xcselect_manpaths_get_path(xcselect_manpaths *xcp, unsigned i);
