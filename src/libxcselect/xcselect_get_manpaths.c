@@ -16,7 +16,7 @@ xcselect_manpaths *xcselect_get_manpaths(char *sdkname)
 		path_join(path_xcrun, MAXPATHLEN, path, "usr/lib/libxcrun.dylib");
 		if (path_exists(path_xcrun) != 0) {
 			void *open_xcrun = dlopen(path_xcrun, RTLD_LAZY);
-			void (*fn)(const char* devpath, const char* sdkname, void (^)(const char*));
+			void (*xcrun_iter_manpaths)(const char* devpath, const char* sdkname, void (^)(const char*));
 			if (!open_xcrun) {
 				free(rv);
 				fprintf(stderr, "%s: error: unable to load libxcrun (%s).\n", getprogname(), dlerror());
