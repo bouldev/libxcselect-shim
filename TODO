@@ -1,0 +1,6 @@
+[ ] libxcselect.dylib
+[ ] libxcrun.dylib
+[ ] xcrun
+[ ] xcode-select
+[ ] xcodebuild (maybe?)
+[ ] wrapper tools go through xcselect_invoke_xcrun under /usr/bin
