@@ -2,19 +2,19 @@
 
 XC_EXPORT
 bool xcselect_find_developer_contents_from_path(char *path, char *buffer, size_t buffer_size, bool *was_cltools) {
-	char str[1024];
+	char str[MAXPATHLEN];
 	if (*path == '/') {
 		// the first char of path is '/'
 		sprintf(str, "%s", path);
 	} else {
-		getcwd(str, 1024);
-		path_append(str, 1024, path);
+		getcwd(str, MAXPATHLEN);
+		path_append(str, MAXPATHLEN, path);
 	}
 	for (char *i = str + strlen(str) - 1; i > str && *i == '/'; --i) {
 		*i = 0; // '\0'
 	}
-	char joinedPath[1024];
-	if(str[0] == '/' || (path_join(joinedPath, 1024, str, "mach_kernel"),/*BOOL*/path_exists(joinedPath))) {
+	char joinedPath[MAXPATHLEN];
+	if(str[0] == '/' || (path_join(joinedPath, MAXPATHLEN, str, "mach_kernel"),/*BOOL*/path_exists(joinedPath))) {
 		path_join(buffer , buffer_size, str, "Library/Developer/CommandLineTools");
 		if(path_contains_xcrun(buffer)) {
 			*was_cltools=1;

@@ -1,5 +1,4 @@
 #include <xcselect.h>
-#include <stdio.h>
 
 static char *developer_tool_bundle_ids[] = {
 	"dt.Xcode",
@@ -17,11 +16,11 @@ static bool _xcselect_bundle_is_developer_tool(const char *bundle_id)
 	//printf("%s", developer_tool_bundle_ids[1]);
 	if ((strlen(bundle_id) >= 10) && strncmp((const char*)bundle_id, (const char*)BUNDLE_PREFIX, 10) == 0) {
 		char matchString[128];
-		sprintf(matchString,"com.apple.");
-		char *matchChild=matchString+10;
-		for(int i=0;i<8;i++) {
+		sprintf(matchString, BUNDLE_PREFIX);
+		char *matchChild = matchString + 10;
+		for(int i = 0; i < 8; i++) {
 			strcpy(matchChild, developer_tool_bundle_ids[i]);
-			if(strcmp(matchString,bundle_id)==0) {
+			if(strcmp(matchString,bundle_id) == 0) {
 				return true;
 			}
 		}

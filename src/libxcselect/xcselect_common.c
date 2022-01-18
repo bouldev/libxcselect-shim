@@ -82,6 +82,27 @@ bool str_endswith(const char *str, const char *end)
 }
 
 XC_HIDDEN
+bool get_developer_dir_from_symlink(const char *path, char *buffer, int buffer_size, bool *status)
+{
+	ssize_t read_stat = readlink(path, buffer, (long)(buffer_size - 1));
+	if (read_stat < 1) {
+		*status = false;
+	} else {
+		buffer[read_stat] = '\0';
+		*status = true;
+	}
+	return status;
+}
+
+XC_HIDDEN
+void xcselect_manpaths_append(xcselect_manpaths* paths, const char* path)
+{
+	paths->count++;
+	paths->paths = realloc(paths->paths, sizeof(char*) * paths->count);
+	paths->paths[paths->count - 1] = strdup(path);
+}
+
+XC_HIDDEN
 bool is_path_xcrun_shim(const char *path)
 {
 	FILE *file;

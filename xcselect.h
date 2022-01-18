@@ -27,6 +27,11 @@ XC_EXPORT xcselect_manpaths *xcselect_get_manpaths(char *sysroot);
 XC_EXPORT char *xcselect_get_version(void);
 //XC_EXPORT errno_t xcselect_host_sdk_path(/*xcselect_host_sdk_policy_t*/int sdk_policy,
 //				char * __nullable * __nonnull path);
+XC_EXPORT void xcselect_manpaths_free(xcselect_manpaths *xcp);
+XC_EXPORT uint32_t xcselect_manpaths_get_num_paths(xcselect_manpaths *xcp);
+XC_EXPORT const char *xcselect_manpaths_get_path(xcselect_manpaths *xcp, unsigned i);
+XC_EXPORT xcselect_manpaths *xcselect_get_manpaths(char *sdkname);
+
 #ifdef _XC_INTN
 XC_HIDDEN void path_append(char *path_dest, size_t length, const char *path_to_join);
 XC_HIDDEN void path_join(char *path_dest, size_t length, const char *path_src, const char *path_extra);
@@ -34,6 +39,7 @@ XC_HIDDEN bool path_exists(char *path);
 XC_HIDDEN bool path_contains_xcrun(const char *path);
 XC_HIDDEN bool path_is_dir(const char *path);
 XC_HIDDEN bool str_endswith(const char *str, const char *end);
+XC_HIDDEN void xcselect_manpaths_append(xcselect_manpaths* paths, const char* path);
 XC_HIDDEN bool is_path_xcrun_shim(const char *path);
 #endif
 
