@@ -39,6 +39,7 @@ XC_HIDDEN bool path_exists(char *path);
 XC_HIDDEN bool path_contains_xcrun(const char *path);
 XC_HIDDEN bool path_is_dir(const char *path);
 XC_HIDDEN bool str_endswith(const char *str, const char *end);
+XC_HIDDEN bool get_developer_dir_from_symlink(const char *path, char *buffer, int buffer_size, bool *status);
 XC_HIDDEN void xcselect_manpaths_append(xcselect_manpaths* paths, const char* path);
 XC_HIDDEN bool is_path_xcrun_shim(const char *path);
 #endif

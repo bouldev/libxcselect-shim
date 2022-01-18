@@ -84,14 +84,24 @@ bool str_endswith(const char *str, const char *end)
 XC_HIDDEN
 bool get_developer_dir_from_symlink(const char *path, char *buffer, int buffer_size, bool *status)
 {
+	// status 0: exists but err, 1: exists and no error, NULL: not exist
 	ssize_t read_stat = readlink(path, buffer, (long)(buffer_size - 1));
 	if (read_stat < 1) {
-		*status = false;
+		if (errno != ENOENT) {
+			if (errno == EACCES) {
+				fprintf(stderr, "xcode-select: error: invalid permissions for data link at \'%s\'\n", path);
+			} else {
+				fprintf(stderr, "xcode-select: error: unable to read data link at \'%s\', expected symbolic link (%s)\n", path, strerror(errno));
+			}
+			*status = false;
+		} else {
+			return false;
+		}
 	} else {
 		buffer[read_stat] = '\0';
 		*status = true;
 	}
-	return status;
+	return true;
 }
 
 XC_HIDDEN
