@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <dirent.h>
 #include <sys/param.h>
 #include <CoreFoundation/CFBase.h>
 
@@ -32,8 +33,8 @@ XC_EXPORT bool xcselect_find_developer_contents_from_path(char *path, char *buff
 XC_EXPORT xcselect_manpaths *xcselect_get_manpaths(char *sysroot);
 XC_EXPORT char *xcselect_get_version(void);
 XC_EXPORT errno_t xcselect_host_sdk_path(xcselect_host_sdk_policy_t sdk_policy,
-				char **path);
-//				char * __nullable * __nonnull path); // No idea on this
+//				char **path);
+				char * __nullable * __nonnull path); // No idea on this
 XC_EXPORT void xcselect_manpaths_free(xcselect_manpaths *xcp);
 XC_EXPORT uint32_t xcselect_manpaths_get_num_paths(xcselect_manpaths *xcp);
 XC_EXPORT const char *xcselect_manpaths_get_path(xcselect_manpaths *xcp, unsigned i);

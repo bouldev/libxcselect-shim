@@ -113,6 +113,35 @@ void xcselect_manpaths_append(xcselect_manpaths* paths, const char* path)
 }
 
 XC_HIDDEN
+errno_t sdks_at_path(char *sdkdir, char * __nullable * __nonnull path, size_t length)
+{
+	DIR *try_open = opendir((const char *)sdkdir);
+	struct dirent *dp;
+	struct stat *st;
+	char path_sys_cdefs_h[MAXPATHLEN];
+
+	if (try_open == NULL) {
+		return 0;
+	} else {
+		errno_t status = 0;
+		if (readdir(try_open) != 0 && length != 0) {
+			do {
+				long asprintf_result = asprintf(&path_sys_cdefs_h, "%s/%s/usr/include/sys/cdefs.h", sdkdir, "iPhoneOS.sdk"/*wtf was here?*/);
+				if (stat(path_sys_cdefs_h, &st) == 0) {
+					path_sys_cdefs_h[asprintf_result - 0x18] = '\0';
+					*path = path_sys_cdefs_h;
+					status = status + 1;
+				} else {
+					free(path_sys_cdefs_h);
+				}
+			} while ((status < length) && (readdir(try_open) != 0));
+		}
+		closedir(try_open);
+	}
+	return status;
+}
+
+XC_HIDDEN
 bool is_path_xcrun_shim(const char *path)
 {
 	FILE *file;
