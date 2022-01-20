@@ -118,6 +118,7 @@ errno_t sdks_at_path(char *sdkdir, char * __nullable * __nonnull path, size_t le
 	DIR *try_open = opendir((const char *)sdkdir);
 	struct dirent *dp;
 	struct stat *st;
+	errno_t status;
 	char path_sys_cdefs_h[MAXPATHLEN];
 
 	if (try_open == NULL) {
@@ -139,6 +140,24 @@ errno_t sdks_at_path(char *sdkdir, char * __nullable * __nonnull path, size_t le
 		closedir(try_open);
 	}
 	return status;
+}
+
+XC_HIDDEN
+void xcselect_invoke_xcrun_via_library(char *path_xcrun, char *tool_name, int argc, char *argv[], char *path_dev)
+{/* WIP
+	extern char **_NSGetProgname(void);
+	void *open_xcrun = dlopen(path_xcrun, RTLD_LAZY | RTLD_NOW);
+	if (!open_xcrun) {
+		fprintf(stderr, "xcrun: error: unable to load libxcrun (%s).\n", dlerror());
+	} else {
+		int (*xcrun_main)(int argc, char *argv[]);
+		char **progname;
+		xcrun_main = dlsym(open_xcrun, "xcrun_main");
+		if (xcrun_main != NULL) {
+			progname = _NSGetProgname();
+			if (strcmp(*progname, "xcrun") && dlsym(open_xcrun, "xcrun_set_unknown_utility_handler") != NULL) {
+				
+*/
 }
 
 XC_HIDDEN

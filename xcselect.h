@@ -6,8 +6,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <dirent.h>
+#include <dlfcn.h>
+#include <os/assumes.h>
 #include <sys/types.h>
 #include <sys/param.h>
+#include <sys/sysctl.h>
 #include <dispatch/dispatch.h>
 #include <CoreFoundation/CFBase.h>
 
@@ -42,6 +45,7 @@ XC_EXPORT void xcselect_manpaths_free(xcselect_manpaths *xcp);
 XC_EXPORT uint32_t xcselect_manpaths_get_num_paths(xcselect_manpaths *xcp);
 XC_EXPORT const char *xcselect_manpaths_get_path(xcselect_manpaths *xcp, uint32_t id);
 XC_EXPORT xcselect_manpaths *xcselect_get_manpaths(char *sdkname);
+XC_EXPORT bool xcselect_trigger_install_request(char *name);
 
 #ifdef _XC_INTN
 XC_HIDDEN void path_append(char *path_dest, size_t length, const char *path_to_join);

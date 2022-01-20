@@ -63,12 +63,13 @@ bool xcselect_get_developer_dir_path(char *buffer, int buffer_size, bool *was_en
 	} else {
 		ssize_t rsize = read(fd, buffer, (int)buffer_size - 1);
 		if (rsize == -1) {
-			fprintf(stderror, "xcode-select: error: unable to read data file (%s)\n", strerror(errno));
+			fprintf(stderr, "xcode-select: error: unable to read data file (%s)\n", strerror(errno));
 			close(fd);
 			return false; //0 != 0
 		}
+		int v19;
 		if (rsize) { // if rsize==0, the file is empty but the read is successful
-			if (buffer[rsize - 1] != '\n' || (int v19 = rsize <= 1, --rsize, !v19)) {
+			if ((buffer[rsize - 1] != '\n') || (v19 = rsize<=1, --rsize, !v19)) {
 				buffer[rsize] = 0;
 				close(fd);
 				int v13 = strrchr(buffer, '/');
@@ -93,7 +94,7 @@ bool xcselect_get_developer_dir_path(char *buffer, int buffer_size, bool *was_en
 		return true;
 	}
 	int r = path_is_dir("/Applications/Xcode-beta.app");
-	if (!result) return false;
+	if (!r) return false;
 	strlcpy(buffer, "/Applications/Xcode-beta.app/Contents/Developer", (int)buffer_size);
 	return true;
 }

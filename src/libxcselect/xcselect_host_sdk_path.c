@@ -1,9 +1,9 @@
 #include <xcselect.h>
 
 static struct {
-	static dispatch_once_t onceToken;
-	static char *product;
-	static long version;
+	dispatch_once_t onceToken;
+	char *product;
+	long version;
 } host_version;
 
 XC_EXPORT
@@ -14,7 +14,7 @@ errno_t xcselect_host_sdk_path(xcselect_host_sdk_policy_t sdk_policy,
 	if (!path || sdk_policy - 1 > 2)
 		return status;
 
-	char *path_return *path_idk_wtf *path_idk_wtf_2, *path_idk_wtf_3 *path_return_2;
+	char *path_return, *path_idk_wtf, *path_idk_wtf_2, *path_idk_wtf_3, *path_return_2;
 	char **path_at = (char **)calloc(0x40, 8);
 	char path_dev[MAXPATHLEN], sdkroot[MAXPATHLEN];
 	bool was_environment, was_cltools, was_default;
@@ -33,7 +33,7 @@ errno_t xcselect_host_sdk_path(xcselect_host_sdk_policy_t sdk_policy,
 				status = sdks_at_path(sdkroot, path_at, 64);
 				free(sdkroot);
 			}
-			long long_idk_wtf = sdk_at_path("/Library/Developer/CommandLineTools/SDKs", path_at + status, 0x40 - status) + status;
+			long long_idk_wtf = sdks_at_path("/Library/Developer/CommandLineTools/SDKs", path_at + status, 0x40 - status) + status;
 			if (long_idk_wtf == 0) {
 				path_idk_wtf = NULL;
 				path_return = NULL;
