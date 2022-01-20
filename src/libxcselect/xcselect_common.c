@@ -144,20 +144,35 @@ errno_t sdks_at_path(char *sdkdir, char * __nullable * __nonnull path, size_t le
 
 XC_HIDDEN
 void xcselect_invoke_xcrun_via_library(char *path_xcrun, char *tool_name, int argc, char *argv[], char *path_dev)
-{/* WIP
+{
 	extern char **_NSGetProgname(void);
 	void *open_xcrun = dlopen(path_xcrun, RTLD_LAZY | RTLD_NOW);
 	if (!open_xcrun) {
 		fprintf(stderr, "xcrun: error: unable to load libxcrun (%s).\n", dlerror());
 	} else {
 		int (*xcrun_main)(int argc, char *argv[]);
-		char **progname;
+		void (*xcrun_set_unknown_utility_handler)(const void *block_invoke);
+		char **progname = _NSGetProgname();
 		xcrun_main = dlsym(open_xcrun, "xcrun_main");
-		if (xcrun_main != NULL) {
-			progname = _NSGetProgname();
-			if (strcmp(*progname, "xcrun") && dlsym(open_xcrun, "xcrun_set_unknown_utility_handler") != NULL) {
-				
-*/
+		xcrun_set_unknown_utility_handler = dlsym(open_xcrun, "xcrun_set_unknown_utility_handler");
+		if (strcmp(*progname, "xcrun") != 0 && xcrun_set_unknown_utility_handler != NULL) {
+			int block_return;
+			xcrun_set_unknown_utility_handler(^(block_return) {
+				block_return = xcselect_trigger_install_request(tool_name);
+				if (block_return == 0) {
+					fprintf(stderr, "xcode-select: Failed to locate \'%s\', and no install could be requested (perhaps no UI is present). Please install manually from \'developer.apple.com\'.\n", tool_name);
+				} else {
+					fprintf(stderr, "xcode-select: Failed to locate \'%s\', requesting installation of command line developer tools.\n", tool_name);
+				}
+				return block_return;
+			});
+		}
+		if (xcrun_main(tool_name, argc, argv, path_dev) != 0) {
+			fwrite("xcrun: error: unexpected exit from xcrun_main", 0x2d, 1, stderr);
+			exit(1);
+		}
+		fprintf(stderr, "xcrun: error: unable to resolve xcrun_main (%s).\n", dlerror());
+	}
 }
 
 XC_HIDDEN

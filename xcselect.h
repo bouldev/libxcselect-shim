@@ -13,7 +13,8 @@
 #include <sys/sysctl.h>
 #include <dispatch/dispatch.h>
 #include <CoreFoundation/CFBase.h>
-
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnullability-completeness"
 #define XC_EXPORT __attribute__((visibility("default")))
 #define XC_HIDDEN __attribute__((visibility("hidden")))
 #define BUNDLE_PREFIX "com.apple."
@@ -59,5 +60,5 @@ XC_HIDDEN void xcselect_manpaths_append(xcselect_manpaths* paths, const char* pa
 XC_HIDDEN errno_t sdks_at_path(char *sdkdir, char * __nullable * __nonnull path, size_t length);
 XC_HIDDEN bool is_path_xcrun_shim(const char *path);
 #endif
-
+#pragma clang diagnostic pop
 #endif
