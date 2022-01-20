@@ -40,7 +40,7 @@ XC_EXPORT errno_t xcselect_host_sdk_path(xcselect_host_sdk_policy_t sdk_policy,
 				char * __nullable * __nonnull path); // No idea on this
 XC_EXPORT void xcselect_manpaths_free(xcselect_manpaths *xcp);
 XC_EXPORT uint32_t xcselect_manpaths_get_num_paths(xcselect_manpaths *xcp);
-XC_EXPORT const char *xcselect_manpaths_get_path(xcselect_manpaths *xcp, unsigned i);
+XC_EXPORT const char *xcselect_manpaths_get_path(xcselect_manpaths *xcp, uint32_t id);
 XC_EXPORT xcselect_manpaths *xcselect_get_manpaths(char *sdkname);
 
 #ifdef _XC_INTN
