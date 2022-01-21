@@ -146,7 +146,7 @@ XC_HIDDEN
 void xcselect_invoke_xcrun_via_library(char *path_xcrun, char *tool_name, int argc, char *argv[], char *path_dev)
 {
 	extern char **_NSGetProgname(void);
-	void *open_xcrun = dlopen(path_xcrun, RTLD_LAZY | RTLD_NOW);
+	void *open_xcrun = dlopen(path_xcrun, RTLD_LOCAL | RTLD_LAZY);
 	if (!open_xcrun) {
 		fprintf(stderr, "xcrun: error: unable to load libxcrun (%s).\n", dlerror());
 	} else {
