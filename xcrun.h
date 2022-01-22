@@ -2,6 +2,7 @@
 #define __LIBXCRUN__
 #include <unistd.h>
 #include <Block.h>
+#include <stdarg.h>
 
 #define XC_EXPORT __attribute__((visibility("default")))
 #define XC_HIDDEN __attribute__((visibility("hidden")))
@@ -15,5 +16,7 @@ XC_EXPORT void *xcrun_set_unknown_utility_handler(const void *block_invoke);
 
 XC_HIDDEN int xcrun_main2(int argc, char *argv[]);
 XC_HIDDEN bool util_get_bool_from_environment(const char *env);
+XC_HIDDEN void path_clean_copy(char *path);
+XC_HIDDEN char *msprintf(char *str, ...);
 
 #endif

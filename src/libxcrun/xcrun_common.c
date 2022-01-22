@@ -15,3 +15,14 @@ void path_clean_copy(char *path)
 	}
 	strndup(path, path_len);
 }
+
+XC_HIDDEN
+char *msprintf(char *str, ...)
+{
+	char *buffer;
+	va_list ap;
+	va_start(ap, str);
+	vasprintf(&buffer, str, ap);
+	va_end(ap);
+	return buffer
+}
