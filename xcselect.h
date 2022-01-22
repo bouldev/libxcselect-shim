@@ -48,6 +48,7 @@ XC_EXPORT uint32_t xcselect_manpaths_get_num_paths(xcselect_manpaths *xcp);
 XC_EXPORT const char *xcselect_manpaths_get_path(xcselect_manpaths *xcp, uint32_t id);
 XC_EXPORT xcselect_manpaths *xcselect_get_manpaths(char *sdkname);
 XC_EXPORT bool xcselect_trigger_install_request(char *name);
+XC_EXPORT void xcselect_invoke_xcrun(char *tool_name, int argc, char *argv[], int zero); // last arg should always be 0
 
 #ifdef _XC_INTN
 XC_HIDDEN void path_append(char *path_dest, size_t length, const char *path_to_join);
