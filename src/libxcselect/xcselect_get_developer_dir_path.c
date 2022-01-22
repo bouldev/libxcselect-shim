@@ -20,7 +20,7 @@ XC_EXPORT
 bool xcselect_get_developer_dir_path(char *buffer, int buffer_size, bool *was_environment, bool *was_cltools, bool *was_default) {
 	// buffer should be writable!!!
 	*was_cltools = 0;
-	*was_default = 0;
+	*was_default = 0;w
 	char *devdir = getenv("DEVELOPER_DIR");
 	if (devdir && *devdir) { // devdir is a valid pointer and the length of its target isn't 0.
 		if (/*ret=bool*/xcselect_find_developer_contents_from_path(devdir, buffer, buffer_size, was_cltools)) {
@@ -28,7 +28,7 @@ bool xcselect_get_developer_dir_path(char *buffer, int buffer_size, bool *was_en
 				setenv("DEVELOPER_DIR", buffer, 1);
 			}
 		} else {
-			strlcpy(buffer, devdir, (int)buffer_size);
+			strlcpy(buffer, devdir, buffer_size);
 		}
 		*was_environment = 1;
 		return true;

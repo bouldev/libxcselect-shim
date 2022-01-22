@@ -17,6 +17,7 @@
 #pragma clang diagnostic ignored "-Wnullability-completeness"
 #define XC_EXPORT __attribute__((visibility("default")))
 #define XC_HIDDEN __attribute__((visibility("hidden")))
+#define XCSELECT_VER "2384"
 #define BUNDLE_PREFIX "com.apple."
 
 typedef struct xcselect_manpaths {
