@@ -12,6 +12,7 @@
 #include <sys/param.h>
 #include <sys/sysctl.h>
 #include <dispatch/dispatch.h>
+#include <TargetConditionals.h>
 #include <CoreFoundation/CFBase.h>
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wnullability-completeness"
@@ -19,6 +20,11 @@
 #define XC_HIDDEN __attribute__((visibility("hidden")))
 #define XCSELECT_VER "2384"
 #define BUNDLE_PREFIX "com.apple."
+#if !TARGET_OS_OSX && !defined(CF_PATH)
+#define CF_PATH "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation"
+#elif !defined(CF_PATH)
+#define CF_PATH "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation"
+#endif
 
 typedef struct xcselect_manpaths {
 	char **paths;
@@ -61,6 +67,7 @@ XC_HIDDEN bool get_developer_dir_from_symlink(const char *path, char *buffer, in
 XC_HIDDEN void xcselect_manpaths_append(xcselect_manpaths* paths, const char* path);
 XC_HIDDEN errno_t sdks_at_path(char *sdkdir, char * __nullable * __nonnull path, size_t length);
 XC_HIDDEN void xcselect_invoke_xcrun_via_library(char *path_xcrun, char *tool_name, int argc, char *argv[], char *path_dev);
+XC_HIDDEN void *lazyCFSymbol(const char *symbol);
 XC_HIDDEN bool is_path_xcrun_shim(const char *path);
 #endif
 #pragma clang diagnostic pop

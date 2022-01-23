@@ -150,14 +150,14 @@ void xcselect_invoke_xcrun_via_library(char *path_xcrun, char *tool_name, int ar
 	if (!open_xcrun) {
 		fprintf(stderr, "xcrun: error: unable to load libxcrun (%s).\n", dlerror());
 	} else {
-		int (*xcrun_main)(int argc, char *argv[]);
+		int (*xcrun_main)(char *tool_name, int argc, char *argv[], char *devidr);
 		void (*xcrun_set_unknown_utility_handler)(const void *block_invoke);
 		char **progname = _NSGetProgname();
 		xcrun_main = dlsym(open_xcrun, "xcrun_main");
 		xcrun_set_unknown_utility_handler = dlsym(open_xcrun, "xcrun_set_unknown_utility_handler");
 		if (strcmp(*progname, "xcrun") != 0 && xcrun_set_unknown_utility_handler != NULL) {
 			int block_return;
-			xcrun_set_unknown_utility_handler(^(block_return) {
+			xcrun_set_unknown_utility_handler(^(int block_return) {
 				block_return = xcselect_trigger_install_request(tool_name);
 				if (block_return == 0) {
 					fprintf(stderr, "xcode-select: Failed to locate \'%s\', and no install could be requested (perhaps no UI is present). Please install manually from \'developer.apple.com\'.\n", tool_name);
@@ -173,6 +173,24 @@ void xcselect_invoke_xcrun_via_library(char *path_xcrun, char *tool_name, int ar
 		}
 		fprintf(stderr, "xcrun: error: unable to resolve xcrun_main (%s).\n", dlerror());
 	}
+}
+
+XC_HIDDEN
+void *lazyCFSymbol(const char *symbol)
+{
+	static struct {
+		dispatch_once_t onceToken;
+		void *lib;
+	} _lazyCFSymbol;
+	if (_lazyCFSymbol.onceToken != -1) {
+		dispatch_once(_lazyCFSymbol.onceToken, ^{
+			_lazyCFSymbol.lib = dlopen(CF_PATH, RTLD_LAZY);
+		});
+	}
+	if (_lazyCFSymbol.lib != NULL) {
+		return dlsym(_lazyCFSymbol.lib, symbol);
+	}
+	return NULL;
 }
 
 XC_HIDDEN
