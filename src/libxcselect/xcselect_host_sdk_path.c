@@ -16,7 +16,7 @@ errno_t xcselect_host_sdk_path(xcselect_host_sdk_policy_t sdk_policy,
 
 	char *path_return, *path_idk_wtf, *path_idk_wtf_2, *path_idk_wtf_3, *path_return_2;
 	char **path_at = (char **)calloc(0x40, 8);
-	char path_dev[MAXPATHLEN], sdkroot[MAXPATHLEN];
+	char path_dev[MAXPATHLEN], *sdkroot;
 	bool was_environment, was_cltools, was_default;
 	if (host_version.onceToken != -1) {
 		dispatch_once(&host_version.onceToken, ^{

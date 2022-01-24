@@ -1,7 +1,7 @@
 #include <xcselect.h>
 
 XC_EXPORT
-bool xcselect_find_developer_contents_from_path(char *path, char *buffer, size_t buffer_size, bool *was_cltools) {
+bool xcselect_find_developer_contents_from_path(char * __nonnull path, char *buffer, size_t buffer_size, bool *was_cltools) {
 	char str[MAXPATHLEN];
 	if (*path == '/') {
 		// the first char of path is '/'

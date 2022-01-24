@@ -20,7 +20,7 @@ XC_EXPORT
 bool xcselect_get_developer_dir_path(char *buffer, int buffer_size, bool *was_environment, bool *was_cltools, bool *was_default) {
 	// buffer should be writable!!!
 	*was_cltools = 0;
-	*was_default = 0;w
+	*was_default = 0;
 	char *devdir = getenv("DEVELOPER_DIR");
 	if (devdir && *devdir) { // devdir is a valid pointer and the length of its target isn't 0.
 		if (/*ret=bool*/xcselect_find_developer_contents_from_path(devdir, buffer, buffer_size, was_cltools)) {
@@ -33,12 +33,12 @@ bool xcselect_get_developer_dir_path(char *buffer, int buffer_size, bool *was_en
 		*was_environment = 1;
 		return true;
 	}
-	int8_t out; // may be a bool, but we keep its original state here.
+	bool out; // may be a bool, but we keep its original state here.
 	*was_environment = 0;
 	if (get_developer_dir_from_symlink("/var/db/xcode_select_link", buffer, buffer_size, &out) != 0 ||
 		get_developer_dir_from_symlink("/usr/share/xcode-select/xcode_dir_link", buffer, buffer_size, &out) != 0) {
 		if (out) {
-			int v13 = strrchr(buffer,'/');
+			char *v13 = strrchr(buffer,'/');
 			if (v13) {
 				*was_cltools = strcmp(v13 + 1, "CommandLineTools") == 0;//(str v13+1)=="CommandLineTools"
 			} else {
@@ -72,7 +72,7 @@ bool xcselect_get_developer_dir_path(char *buffer, int buffer_size, bool *was_en
 			if ((buffer[rsize - 1] != '\n') || (v19 = rsize<=1, --rsize, !v19)) {
 				buffer[rsize] = 0;
 				close(fd);
-				int v13 = strrchr(buffer, '/');
+				char *v13 = strrchr(buffer, '/');
 				if (v13) {
 					*was_cltools = strcmp(v13 + 1, "CommandLineTools") == 0;//(str v13+1)=="CommandLineTools"
 				} else {

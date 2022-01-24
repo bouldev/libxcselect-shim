@@ -29,7 +29,7 @@ static bool _xcselect_bundle_is_developer_tool(const char *bundle_id)
 }
 
 XC_EXPORT
-bool xcselect_bundle_is_developer_tool(char *path)
+bool xcselect_bundle_is_developer_tool(char *bundle_id)
 {
-	return _xcselect_bundle_is_developer_tool(path);
+	return _xcselect_bundle_is_developer_tool(bundle_id);
 }

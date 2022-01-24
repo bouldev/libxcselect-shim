@@ -117,9 +117,9 @@ errno_t sdks_at_path(char *sdkdir, char * __nullable * __nonnull path, size_t le
 {
 	DIR *try_open = opendir((const char *)sdkdir);
 	struct dirent *dp;
-	struct stat *st;
+	struct stat st;
 	errno_t status;
-	char path_sys_cdefs_h[MAXPATHLEN];
+	char *path_sys_cdefs_h;
 
 	if (try_open == NULL) {
 		return 0;
@@ -176,6 +176,34 @@ void xcselect_invoke_xcrun_via_library(char *path_xcrun, char *tool_name, int ar
 }
 
 XC_HIDDEN
+void xcselect_invoke_xcrun_via_binary(char *path_xcrun, char *argv[], char *path_dev, bool was_environment)
+{
+	execv(path_xcrun, argv);
+	if (errno == ENOENT) { // path_xcrun not exist
+		char *dev_dir_type, *dev_dir_error;
+		struct stat st;
+		int path_dev_stat = stat(path_dev, &st);
+		if ((path_dev_stat == 0) && ((st.st_mode & S_IFMT) == S_IFDIR)) { // devdir exists
+			dev_dir_type = "active developer";
+			if (was_environment) {
+				dev_dir_type = "DEVELOPER_DIR";
+			}
+			fprintf(stderr, "xcrun: error: invalid %s path (%s), missing xcrun at: %s\n", dev_dir_type, path_dev, path_xcrun);
+		} else { // devdir invalid
+			if (path_dev_stat == 0) {
+				dev_dir_error = "is invalid";
+			} else {
+				dev_dir_error = "does not exist";
+			}
+			fprintf(stderr, "xcrun: error: active developer path (\"%s\") %s\nUse `sudo xcode-select --switch path/to/Xcode.app` to specify the Xcode that you wish to use for command line developer tools, or use `xcode-select --install` to install the standalone command line developer tools.\nSee `man xcode-select` for more details.\n", path_dev, dev_dir_error);
+		}
+	} else { // path_xcrun exists but not executable
+		fprintf(stderr, "xcrun: error: unable to exec Xcode native xcrun (%s).\n", strerror(errno));
+	}
+	exit(1);
+}
+
+XC_HIDDEN
 void *lazyCFSymbol(const char *symbol)
 {
 	static struct {
@@ -183,7 +211,7 @@ void *lazyCFSymbol(const char *symbol)
 		void *lib;
 	} _lazyCFSymbol;
 	if (_lazyCFSymbol.onceToken != -1) {
-		dispatch_once(_lazyCFSymbol.onceToken, ^{
+		dispatch_once(&_lazyCFSymbol.onceToken, ^{
 			_lazyCFSymbol.lib = dlopen(CF_PATH, RTLD_LAZY);
 		});
 	}

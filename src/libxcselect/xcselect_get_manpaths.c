@@ -26,7 +26,7 @@ xcselect_manpaths *xcselect_get_manpaths(char *sdkname)
 
 		xcrun_iter_manpaths = dlsym(open_xcrun, "xcrun_iter_manpaths");
 		if (xcrun_iter_manpaths != NULL) {
-			path[MAXPATHLEN] = 0;
+			path[strlen(path)] = 0;
 			xcrun_iter_manpaths(path, sdkname, ^(const char* path) {
 				xcselect_manpaths_append(rv, path);
 			});
