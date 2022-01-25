@@ -8,11 +8,10 @@
 #include <stdio.h>
 #include <dirent.h>
 #include <dlfcn.h>
-#include <os/assumes.h>
 #include <sys/types.h>
 #include <sys/param.h>
+#include <sys/errno.h>
 #include <sys/sysctl.h>
-#include <dispatch/dispatch.h>
 #include <TargetConditionals.h>
 
 #pragma clang diagnostic push

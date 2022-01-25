@@ -15,6 +15,7 @@ aaa(&outval);
 
 */
 #include <xcselect.h>
+#include <fcntl.h>
 
 XC_EXPORT
 bool xcselect_get_developer_dir_path(char *buffer, int buffer_size, bool *was_environment, bool *was_cltools, bool *was_default) {

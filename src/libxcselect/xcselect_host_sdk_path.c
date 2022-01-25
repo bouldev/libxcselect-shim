@@ -1,4 +1,13 @@
 #include <xcselect.h>
+#include <dispatch/dispatch.h>
+
+#ifdef __has_include
+#if __has_include(<os/assumes.h>)
+#include <os/assumes.h>
+#else
+extern void _os_assumes_log(uint64_t code);
+#endif
+#endif
 
 static struct {
 	dispatch_once_t onceToken;

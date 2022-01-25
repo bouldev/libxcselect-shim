@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <dispatch/dispatch.h>
 
 XC_HIDDEN
 void path_append(char *path_dest, size_t length, const char *path_to_join)
