@@ -58,3 +58,16 @@ char **xcinfocache_create(char *path)
 
 	return xcrun_env;
 }
+
+/* I give up, that's too shity to operate with manpaths
+XC_HIDDEN
+uint32_t xcinfocache_open_cache(char *xcinfocache, bool write_log, bool require_xcode, bool)
+{
+	xcinfocache[1] = diskstrmap_open(*xcinfocache, xcinfocache[17], write_log);
+	if (require_xcode || xcinfocache[4]) return 0;
+
+	char *developer_dir = (char *)xcinfocache[3];
+	char *app_dir = strstr(developer_dir,".app/");
+	if (!app_dir) {
+		if (app_dir = realpath(developer_dir, 0), !app_dir)
+*/
