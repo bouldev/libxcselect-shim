@@ -44,22 +44,6 @@ bool path_contains_xcrun(const char *path)
 		return (st.st_mode >> 6) & 1;
 	}
 	return false;
-	/*size_t length;
-
-	strcpy(buffer, path);
-	strcat(buffer, "/");
-
-	length = strlen(buffer);
-	strcat(buffer, "usr/lib/libxcrun.dylib");
-	if (access(buffer, F_OK) == 0)
-		return true;
-
-	buffer[length] = 0;
-	strcat(buffer, "usr/bin/xcrun");
-	if (access(buffer, F_OK) == 0)
-		return true;
-
-	return false;*/
 }
 
 XC_HIDDEN
@@ -80,6 +64,19 @@ bool str_endswith(const char *str, const char *end)
 		return false;
 	}
 	return true;
+}
+
+XC_HIDDEN
+char *str_tolower(char *s)
+{
+	char *d = (char *)malloc(strlen(s));
+	while (*s)
+	{
+		*d = tolower(*s);
+		d++;
+		s++;
+	}
+	return d;
 }
 
 XC_HIDDEN

@@ -200,6 +200,7 @@ XC_HIDDEN void xcselect_invoke_xcrun_via_binary(char *path_xcrun, char * __nulla
 XC_HIDDEN void *lazyCFSymbol(const char *symbol);
 XC_HIDDEN bool is_path_xcrun_shim(const char *path);
 XC_HIDDEN char *xcselect_get_config_string(const char *key);
+XC_HIDDEN char *str_tolower(char *s);
 #endif
 
 __END_DECLS
