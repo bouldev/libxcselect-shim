@@ -28,6 +28,10 @@
 #define CF_PATH "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation"
 #endif
 
+#ifndef _PATH_XCSELECT_CONF
+#define _PATH_XCSELECT_CONF "/etc/xcselect.conf"
+#endif
+
 typedef struct xcselect_manpaths {
 	char **paths;
 	uint32_t count;
@@ -175,6 +179,13 @@ XC_EXPORT
 void xcselect_invoke_xcrun(char *tool_name, int argc, char * __nullable argv[], bool require_xcode);
 
 #ifdef _XC_INTN
+#ifndef BUNDLE_SEPERATOR
+#define BUNDLE_SEPERATOR ";"
+#endif
+#ifndef PATH_SEPERATOR
+#define PATH_SEPERATOR ":"
+#endif
+
 XC_HIDDEN void path_append(char *path_dest, size_t length, const char *path_to_join);
 XC_HIDDEN void path_join(char *path_dest, size_t length, const char *path_src, const char *path_extra);
 XC_HIDDEN bool path_exists(char *path);
