@@ -67,7 +67,7 @@ xcselect_get_config_string(const char *key)
 					}else if(parseIndex==0) {
 						fclose(config_file);
 						if(configItemIndex==configArrSize) {
-							config_entries=reallocarray(config_entries, configArrSize++, sizeof(void*));
+							config_entries=realloc(config_entries,sizeof(void*)*(configArrSize++));
 						}
 						config_entries[configItemIndex]=NULL;
 						return;
@@ -124,7 +124,8 @@ xcselect_get_config_string(const char *key)
 					char *item_value=malloc(parseBufLen);
 					memcpy(item_value,parseBuf,parseBufLen);
 					if(configItemIndex==configArrSize) {
-						config_entries=reallocarray(config_entries, configArrSize+32, sizeof(void*));
+						config_entries=realloc(config_entries,(configArrSize+32)*sizeof(void*));
+						configArrSize+=32;
 					}
 					char **current_item=calloc(2,sizeof(char *));
 					current_item[0]=item_name;
