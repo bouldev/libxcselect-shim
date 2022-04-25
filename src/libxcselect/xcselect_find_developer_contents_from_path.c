@@ -14,7 +14,7 @@ bool xcselect_find_developer_contents_from_path(char * __nonnull path, char *buf
 		*i = 0; // '\0'
 	}
 	char joinedPath[MAXPATHLEN];
-	if(str[0] == '/' || (path_join(joinedPath, MAXPATHLEN, str, "mach_kernel"),/*BOOL*/path_exists(joinedPath))) {
+	if((str[0] == '/' && str[1] == '\0') || (path_join(joinedPath, MAXPATHLEN, str, "mach_kernel"),/*BOOL*/path_exists(joinedPath))) {
 		path_join(buffer , buffer_size, str, "Library/Developer/CommandLineTools");
 		if(path_contains_xcrun(buffer)) {
 			*was_cltools=1;
