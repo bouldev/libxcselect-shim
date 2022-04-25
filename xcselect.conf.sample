@@ -1,0 +1,23 @@
+# xcselect.conf
+
+## xcselect_bundle_is_developer_tool
+
+### developer_tool_bundle_ids:
+###   Bundle IDs in this config will be recognized as valid
+###   Seperate multiple IDs using `;'
+
+# developer_tool_bundle_ids=com.torrekie.xcselect;some.of.other.bundle
+
+### allow_any_bundles:
+###   Allow any bundleid to pass the check
+###   Setting to 1 will ignore developer_tool_bundle_ids
+
+# allow_any_bundles=1
+
+
+## xcselect_developer_dir_matches_path
+
+### developer_dir_always_match
+###   Allow any paths to be recognized as match by this function
+
+# developer_dir_always_match=1

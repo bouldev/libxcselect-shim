@@ -2,7 +2,9 @@
 #include <string.h>
 
 XC_EXPORT
-bool xcselect_developer_dir_matches_path(const char *developer_dir,const char *path) {
+bool xcselect_developer_dir_matches_path(const char *developer_dir, const char *path) {
+	if (xcselect_config_get_bool(xcselect_get_config_string("developer_dir_always_match"))) return true;
+
 	char str[1024];
 	if (developer_dir) {
 		strlcpy(str, developer_dir, MAXPATHLEN);

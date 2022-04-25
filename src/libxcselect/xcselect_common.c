@@ -1,4 +1,5 @@
 #include <xcselect.h>
+#include <ctype.h>
 #include <stdint.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -67,8 +68,10 @@ bool str_endswith(const char *str, const char *end)
 }
 
 XC_HIDDEN
-char *str_tolower(char *s)
+char *str_tolower(const char *str)
 {
+	char *s;
+	strcpy(s, str);
 	char *d = (char *)malloc(strlen(s));
 	while (*s)
 	{

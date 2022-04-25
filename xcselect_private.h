@@ -179,11 +179,11 @@ XC_EXPORT
 void xcselect_invoke_xcrun(char *tool_name, int argc, char * __nullable argv[], bool require_xcode);
 
 #ifdef _XC_INTN
-#ifndef BUNDLE_SEPERATOR
-#define BUNDLE_SEPERATOR ";"
+#ifndef BUNDLE_SEPARATOR
+#define BUNDLE_SEPARATOR ";"
 #endif
-#ifndef PATH_SEPERATOR
-#define PATH_SEPERATOR ":"
+#ifndef PATH_SEPARATOR
+#define PATH_SEPARATOR ":"
 #endif
 
 XC_HIDDEN void path_append(char *path_dest, size_t length, const char *path_to_join);
@@ -199,8 +199,12 @@ XC_HIDDEN void xcselect_invoke_xcrun_via_library(char *path_xcrun, char *tool_na
 XC_HIDDEN void xcselect_invoke_xcrun_via_binary(char *path_xcrun, char * __nullable argv[], char *path_dev, bool was_environment);
 XC_HIDDEN void *lazyCFSymbol(const char *symbol);
 XC_HIDDEN bool is_path_xcrun_shim(const char *path);
+XC_HIDDEN char *str_tolower(const char *str);
+
+XC_HIDDEN int64_t xcselect_config_get_int64(const char *value);
+XC_HIDDEN bool xcselect_config_get_bool(const char *value);
+XC_HIDDEN void xcselect_free_config();
 XC_HIDDEN char *xcselect_get_config_string(const char *key);
-XC_HIDDEN char *str_tolower(char *s);
 #endif
 
 __END_DECLS

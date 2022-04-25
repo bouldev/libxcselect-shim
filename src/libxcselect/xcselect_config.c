@@ -17,6 +17,47 @@ static struct {
 } xcselect_config = {NULL, true};
 
 XC_HIDDEN
+int64_t xcselect_config_get_int64(const char *value)
+{
+	char *buf;
+	int64_t ret;
+	if (value) {
+		if (ret = strtol(value, &buf, 10), *buf != '\0') {
+			// EINVAL
+			if (errno == EINVAL)
+				fprintf(stderr, "Syntax error: Configure value `%s' is not numeric (%s)", value, strerror(errno));
+			if (errno == ERANGE)
+				fprintf(stderr, "Syntax error: Configure value `%s' out of range (%s)", value, strerror(errno));
+			return 0; // Why not null
+		}
+	}
+	return ret;
+}
+
+XC_HIDDEN
+bool xcselect_config_get_bool(const char *value)
+{
+	const char *str_true[] = {"allow", "true", "yes", "1", "a", "t", "y"};
+	const char *str_false[] = {"deny", "false", "no", "0", "d", "f", "n"};
+
+	int i = 0;
+	char *value_lower = str_tolower(value);
+	if (value) {
+		size_t str_true_length = sizeof(str_true) / sizeof(str_true[0]);
+		size_t str_false_length = sizeof(str_false) / sizeof(str_false[0]);
+
+		do {
+			if (i < str_true_length) if (strcmp(value_lower, str_true[i]) == 0) return true;
+			if (i < str_false_length) if (strcmp(value_lower, str_false[i]) == 0) return false;
+			i++;
+		} while ((i < str_true_length) || (i < str_false_length));
+	}
+
+	if (strlen(value_lower) > 0) return true;
+	return false;
+}
+
+XC_HIDDEN
 void xcselect_free_config()
 {
 	xcselect_config.config_available = true;
@@ -118,8 +159,8 @@ char *xcselect_get_config_string(const char *key)
 					}
 					parseBuf[parseIndex] = '\0';
 					itemIndex = 0;
-					char *item_value = malloc(parseBufLen);
 					int parseBufLen = parseIndex + 1;
+					char *item_value = malloc(parseBufLen);
 					memcpy(item_value, parseBuf, parseBufLen);
 					parseIndex = 0;
 					lineNumber++;
@@ -159,7 +200,7 @@ char *xcselect_get_config_string(const char *key)
 		}
 	}
 	if (!xcselect_config.config_available) return NULL;
-
+finalize:
 	for (char ***item_group_ptr = xcselect_config.config_entries; *item_group_ptr != NULL; item_group_ptr++) {
 		char **item_group = *item_group_ptr;
 		if (strcmp(item_group[0], key) == 0) {
