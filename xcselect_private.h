@@ -93,7 +93,7 @@ bool xcselect_get_developer_dir_path(char *buffer, int buffer_size,
  *
  * \param buffer The buffer stores the developer contents path.
  *
- * \param buffer_size The buffer stores the size of resulting string.
+ * \param buffer_size The size limit of resulting string.
  *
  * \param was_cltools The buffer indicates that resulting path was
  *                    under CommandlineTools instance.
