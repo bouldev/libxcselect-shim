@@ -27,7 +27,7 @@ XC_HIDDEN
 bool path_exists(char *path)
 {
 	struct stat st;
-	return stat(path, &st) == 0;
+	return !stat(path, &st);
 }
 
 XC_HIDDEN
@@ -36,12 +36,12 @@ bool path_contains_xcrun(const char *path)
 	char buffer[MAXPATHLEN];
 	struct stat st;
 	path_join(buffer, MAXPATHLEN, path, "usr/lib/libxcrun.dylib");
-	if(!stat(buffer, &st) && (st.st_mode & S_IFMT) == S_IFREG) {
+	if (!stat(buffer, &st) && S_ISREG(st.st_mode)) {
 		return true;
 	}
 	path_join(buffer, MAXPATHLEN, path, "usr/bin/xcrun");
-	if(stat(buffer, &st)) return false;
-	if((st.st_mode & S_IFMT) == S_IFREG) {
+	if (stat(buffer, &st)) return false;
+	if (S_ISREG(st.st_mode)) {
 		return (st.st_mode >> 6) & 1;
 	}
 	return false;
