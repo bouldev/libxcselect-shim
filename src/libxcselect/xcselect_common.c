@@ -51,9 +51,7 @@ XC_HIDDEN
 bool path_is_dir(const char *path)
 {
 	struct stat st;
-	bool r = stat(path, &st);
-	if(!r) return r;
-	return S_ISDIR(st.st_mode);
+	return !stat(path, &st) && S_ISDIR(st.st_mode);
 }
 
 XC_HIDDEN
