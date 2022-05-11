@@ -9,7 +9,9 @@ xcselect_manpaths *xcselect_get_manpaths(char *sdkname)
 	bool ignored;
 	xcselect_manpaths *rv;
 
-	if (_xpc_runtime_is_app_sandboxed() && (xcselect_get_developer_dir_path(path, MAXPATHLEN, &ignored, &ignored, &ignored)) != 0)
+	bool developer_dir_valid = xcselect_get_developer_dir_path(path, MAXPATHLEN, &ignored, &ignored, &ignored);
+
+	if (_xpc_runtime_is_app_sandboxed() && developer_dir_valid)
 		return NULL;
 
 	rv = (xcselect_manpaths*) malloc(sizeof(*rv));
@@ -33,7 +35,6 @@ xcselect_manpaths *xcselect_get_manpaths(char *sdkname)
 		}
 
 		dlclose(open_xcrun);
-		free(rv);
 	} else {
 		path_join(path_to_append, MAXPATHLEN, path, "usr/share/man");
 		xcselect_manpaths_append(rv, path_to_append);
@@ -44,7 +45,6 @@ xcselect_manpaths *xcselect_get_manpaths(char *sdkname)
 		path_join(path_to_append, MAXPATHLEN, path, "Toolchains/XcodeDefault.xctoolchain/usr/share/man");
 		xcselect_manpaths_append(rv, path_to_append);
 
-		free(rv);
 	}
 	return rv;
 }

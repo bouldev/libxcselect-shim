@@ -11,7 +11,7 @@ extern void _os_assumes_log(uint64_t code);
 
 static struct {
 	dispatch_once_t onceToken;
-	char *product;
+	char product[64];
 	long version;
 } host_version;
 
@@ -19,9 +19,9 @@ XC_EXPORT
 errno_t xcselect_host_sdk_path(xcselect_host_sdk_policy_t sdk_policy,
                                char * __nullable * __nonnull path)
 {
-	errno_t status = EINVAL;
-	if (!path || sdk_policy - 1 > 2)
-		return status;
+	errno_t result = EINVAL;
+	if (!path || sdk_policy - XCSELECT_HOST_SDK_POLICY_MATCHING_PREFERRED > XCSELECT_HOST_SDK_POLICY_MATCHING_ONLY)
+		return result;
 
 	char *path_return, *path_idk_wtf, *path_idk_wtf_2, *path_idk_wtf_3, *path_return_2;
 	char **path_at = (char **)calloc(0x40, 8);
@@ -29,33 +29,31 @@ errno_t xcselect_host_sdk_path(xcselect_host_sdk_policy_t sdk_policy,
 	bool was_environment, was_cltools, was_default;
 	if (host_version.onceToken != -1) {
 		dispatch_once(&host_version.onceToken, ^{
-			size_t sysctl_size = 20; // Not greater than 20 normally
-			host_version.product = malloc(sysctl_size);
-			char *host_ver = malloc(sysctl_size);
+			size_t sysctl_size = sizeof(host_version.product); // Not greater than 20 normally
+			char host_ver[64];
 			if (sysctlbyname("hw.product", host_version.product, &sysctl_size, NULL, 0) != 0)
 				sysctlbyname("hw.machine", host_version.product, &sysctl_size, NULL, 0);
 			if (sysctlbyname("kern.osproductversion", host_ver, &sysctl_size, NULL, 0) == -1)
 				_os_assumes_log((uint64_t)errno);
 			host_version.version = (long)atoi(host_ver);
-			free(host_version.product);
-			free(host_ver);
 		});
 	}
 
-	status = 0;
-	if (getenv("SDKROOT") == NULL && strstr(host_version.product, "Mac") != NULL) {
-		if ((xcselect_get_developer_dir_path(path_dev, MAXPATHLEN, &was_environment, &was_cltools, &was_default) != 0) && ((was_default | was_cltools) == 0)) {
+	errno_t sdk_status = 0;
+	if (!getenv("SDKROOT") && strstr(host_version.product, "Mac") != NULL) {
+		if (xcselect_get_developer_dir_path(path_dev, MAXPATHLEN, &was_environment, &was_cltools, &was_default) && !was_cltools) {
 			asprintf(&sdkroot, "%s/Platforms/MacOSX.platform/Developer/SDKs", path_dev);
-			status = sdks_at_path(sdkroot, path_at, 64);
+			sdk_status = sdks_at_path(sdkroot, path_at, 64);
 			free(sdkroot);
 		}
-		long long_idk_wtf = sdks_at_path("/Library/Developer/CommandLineTools/SDKs", path_at + status, 0x40 - status);
-		status = long_idk_wtf + status;
-		if (status == 0) {
+		long long_idk_wtf = sdks_at_path("/Library/Developer/CommandLineTools/SDKs", path_at + sdk_status, 0x40 - sdk_status);
+		long_idk_wtf = long_idk_wtf + sdk_status;
+		if (long_idk_wtf == 0) {
 			path_idk_wtf = NULL;
 			path_return = NULL;
 		} else {
 			int cmp_result;
+			long sdk_version;
 			unsigned int uint_idk_wtf, uint_idk_wtf_2, uint_idk_wtf_3;
 			path_idk_wtf = NULL;
 			path_idk_wtf_2 = NULL;
@@ -63,16 +61,16 @@ errno_t xcselect_host_sdk_path(xcselect_host_sdk_policy_t sdk_policy,
 			uint_idk_wtf_3 = 0;
 			do {
 				path_idk_wtf_3 = *path_at_2;
-				path_return = strrchr(path_idk_wtf_3, 0x2f);
+				path_return = strrchr(path_idk_wtf_3, '/');
 				cmp_result = strncmp("MacOSX10.", path_return + 1, 9);
-				if (cmp_result == 0) {
+				if (!cmp_result) {
 					path_return = strdup(path_return + 10);
-					path_return_2 = strchr(path_return, 0x2e);
+					path_return_2 = strchr(path_return, '.');
 					cmp_result = strcmp(path_return_2, ".sdk");
 					if (cmp_result == 0) {
 						*path_return_2 = '\0';
-						status = strtol(path_return, NULL, 10);
-						uint_idk_wtf = (unsigned int)status;
+						sdk_version = strtol(path_return, NULL, 10);
+						uint_idk_wtf = (unsigned int)sdk_version;
 					} else {
 						uint_idk_wtf = 0;
 					}
@@ -88,7 +86,7 @@ errno_t xcselect_host_sdk_path(xcselect_host_sdk_policy_t sdk_policy,
 				}
 				path_idk_wtf = path_return;
 				path_return = path_idk_wtf_3;
-				if (uint_idk_wtf != host_version.version) {
+				if (uint_idk_wtf != (unsigned int)host_version.version) {
 					path_return = NULL;
 				}
 				if (path_idk_wtf_2 != NULL) {
@@ -98,37 +96,39 @@ errno_t xcselect_host_sdk_path(xcselect_host_sdk_policy_t sdk_policy,
 					free(path_idk_wtf_3);
 				}
 				path_at_2 = path_at_2 + 1;
-				status = status + -1;
+				long_idk_wtf = long_idk_wtf - 1;
 				path_idk_wtf_2 = path_return;
 				uint_idk_wtf_3 = uint_idk_wtf_2;
-			} while (status != 0);
+			} while (long_idk_wtf != 0);
 		}
 		free(path_at);
 		path_idk_wtf_2 = path_idk_wtf;
-		if (sdk_policy == 1) {
+		if (sdk_policy == XCSELECT_HOST_SDK_POLICY_MATCHING_PREFERRED) {
 			if (path_return != NULL) {
 				path_idk_wtf_2 = path_return;
 			}
-		} else if (sdk_policy != 2) {
-			if (sdk_policy != 3) {
-				path_idk_wtf_2 = NULL;
-			}
+wrap:
 			if (path_idk_wtf_2 != path_return) {
 				free(path_return);
 				path_return = path_idk_wtf_2;
 			}
+		} else if (sdk_policy != XCSELECT_HOST_SDK_POLICY_MATCHING_ONLY) {
+			if (sdk_policy != XCSELECT_HOST_SDK_POLICY_LATEST) {
+				path_idk_wtf_2 = NULL;
+			}
+			goto wrap;
 		}
 		if (path_return != path_idk_wtf) {
 			free(path_idk_wtf);
 		}
 		*path = path_return;
-		status = (errno_t)(path_return == NULL) << 1;
+		result = (errno_t)(path_return == NULL) << 1;
 	} else if (getenv("SDKROOT") != NULL) {
 		*path = getenv("SDKROOT");
-		status = 0;
+		result = 0;
 	} else {
 		*path = "/";
-		status = 0;
+		result = 0;
 	}
-	return status;
+	return result;
 }

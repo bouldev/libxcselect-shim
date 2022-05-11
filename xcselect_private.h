@@ -194,7 +194,7 @@ XC_HIDDEN bool path_is_dir(const char *path);
 XC_HIDDEN bool str_endswith(const char *str, const char *end);
 XC_HIDDEN bool get_developer_dir_from_symlink(const char *path, char *buffer, int buffer_size, bool *status);
 XC_HIDDEN void xcselect_manpaths_append(xcselect_manpaths* paths, const char* path);
-XC_HIDDEN errno_t sdks_at_path(char *sdkdir, char * __nullable * __nonnull path, size_t length);
+XC_HIDDEN size_t sdks_at_path(const char *sdkdir, char * __nullable * __nonnull path, size_t length);
 XC_HIDDEN void xcselect_invoke_xcrun_via_library(char *path_xcrun, char *tool_name, int argc, char * __nullable argv[], char *path_dev);
 XC_HIDDEN void xcselect_invoke_xcrun_via_binary(char *path_xcrun, char * __nullable argv[], char *path_dev, bool was_environment);
 XC_HIDDEN void *lazyCFSymbol(const char *symbol);

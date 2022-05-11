@@ -112,32 +112,35 @@ void xcselect_manpaths_append(xcselect_manpaths* paths, const char* path)
 }
 
 XC_HIDDEN
-errno_t sdks_at_path(char *sdkdir, char * __nullable * __nonnull path, size_t length)
+size_t sdks_at_path(const char *sdkdir, char * __nullable * __nonnull path, size_t length)
 {
-	DIR *try_open = opendir((const char *)sdkdir);
-	struct dirent *dp;
+	DIR *try_open = opendir(sdkdir);
+	DIR *try_read_open;
+	struct dirent *try_read;
 	struct stat st;
-	errno_t status;
+	size_t status;
+	int asprintf_result;
 	char *path_sys_cdefs_h;
 
-	if (try_open == NULL) {
-		return 0;
-	} else {
-		errno_t status = 0;
-		if (readdir(try_open) != 0 && length != 0) {
-			do {
-				long asprintf_result = asprintf(&path_sys_cdefs_h, "%s/%s/usr/include/sys/cdefs.h", sdkdir, "iPhoneOS.sdk"/*wtf was here?*/);
-				if (stat(path_sys_cdefs_h, &st) == 0) {
-					path_sys_cdefs_h[asprintf_result - 0x18] = '\0';
-					*path = path_sys_cdefs_h;
-					status = status + 1;
-				} else {
-					free(path_sys_cdefs_h);
-				}
-			} while ((status < length) && (readdir(try_open) != 0));
-		}
-		closedir(try_open);
+	if (!try_open) return 0;
+	try_read_open = try_open;
+
+	try_read = readdir(try_open);
+	status = 0;
+	if (try_read && length) {
+		status = 0;
+		do {
+			asprintf_result = asprintf(&path_sys_cdefs_h, "%s/%s/usr/include/sys/cdefs.h", sdkdir, try_read->d_name);
+			if (!stat(path_sys_cdefs_h, &st)) {
+				path_sys_cdefs_h[asprintf_result - 24] = 0;
+				path[status++] = path_sys_cdefs_h;
+			} else {
+				free(path_sys_cdefs_h);
+			}
+			try_read = readdir(try_read_open);
+		} while (status < length && try_read);
 	}
+	closedir(try_read_open);
 	return status;
 }
 
