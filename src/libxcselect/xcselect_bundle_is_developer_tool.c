@@ -20,7 +20,7 @@ static bool _xcselect_bundle_is_developer_tool(const char *bundle_id)
 	char *config = xcselect_get_config_string("developer_tool_bundle_ids");
 	if (config) {
 		for (char *sep = config; *sep; sep++) {
-			if (*sep == BUNDLE_SEPARATOR) n++;
+			if (*sep == *BUNDLE_SEPARATOR) n++;
 		}
 		bundles = malloc(sizeof(void *) * n);
 
@@ -31,7 +31,7 @@ static bool _xcselect_bundle_is_developer_tool(const char *bundle_id)
 			p = strtok_r(NULL, BUNDLE_SEPARATOR, &buf);
 		}
 
-		for (i = 0; i < size; ++i) {
+		for (int i = 0; i < size; ++i) {
 			if (strcmp(bundles[i], bundle_id) == 0) return true;
 		}
 
