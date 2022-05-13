@@ -226,6 +226,7 @@ void *lazyCFSymbol(const char *symbol)
 XC_HIDDEN
 bool is_path_xcrun_shim(const char *path)
 {
+/*
 	FILE *file;
 	file = fopen(path, "rb");
 	if (file) {
@@ -240,7 +241,7 @@ bool is_path_xcrun_shim(const char *path)
 					return false;
 				}
 				register unsigned int *ptr=(unsigned int*)(v15+8);
-				//*(int32_t *)&seekval=htonl(*ptr);
+				//(int32_t *)&seekval=htonl(*ptr);
 				seekval=htonl(*ptr);
 			}else{
 				seekval=0;
@@ -291,5 +292,6 @@ bool is_path_xcrun_shim(const char *path)
 		}
 		fclose(file);
 	}
+*/
 	return false;
 }
