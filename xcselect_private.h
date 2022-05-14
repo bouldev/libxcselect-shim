@@ -19,7 +19,11 @@
 
 #define XC_EXPORT OS_EXPORT
 #define XC_HIDDEN __attribute__((visibility("hidden")))
+
+#ifdef _XC_INTN
+#ifndef XCSELECT_VER
 #define XCSELECT_VER "2384"
+#endif
 #define BUNDLE_PREFIX "com.apple."
 
 #if !TARGET_OS_OSX && !defined(CF_PATH)
@@ -31,6 +35,7 @@
 #ifndef _PATH_XCSELECT_CONF
 #define _PATH_XCSELECT_CONF "/etc/xcselect.conf"
 #endif
+#endif // _XC_INTN
 
 typedef struct xcselect_manpaths {
 	char **paths;
@@ -205,7 +210,7 @@ XC_HIDDEN int64_t xcselect_config_get_int64(const char *value);
 XC_HIDDEN bool xcselect_config_get_bool(const char *value);
 XC_HIDDEN void xcselect_free_config();
 XC_HIDDEN char *xcselect_get_config_string(const char *key);
-#endif
+#endif // _XC_INTN
 
 __END_DECLS
 
