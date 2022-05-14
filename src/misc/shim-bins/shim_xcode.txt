@@ -1,0 +1,16 @@
+actool
+agvtool
+desdp
+genstrings
+ibtool
+ictool
+instruments
+iprofiler
+opendiff
+sdef
+sdp
+stapler
+xcodebuild
+xcscontrol
+xcsdiagnose
+xed
