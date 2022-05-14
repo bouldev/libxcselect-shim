@@ -1,21 +1,10 @@
 #include <xcselect.h>
 
-struct xcrun_shim_section_header
-{
-	uint64_t message;
-	uint64_t message2;
-};
-
-__attribute__((visibility("hidden")))
-struct xcrun_shim_section_header shim_marker
-	__attribute__((section("__DATA,__xcrun_shim")))
-	= {0, 0};
-
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmain-return-type"
 
-// It is weird I know, but this has to be like that
-void main(int argc, char** argv)
+// It is weird I know, but this has to be like that, same for other shims
+void main(int argc, char *argv[])
 {
 	const char *progname = getprogname();
 	const char *tool_name, *xc_tool;
