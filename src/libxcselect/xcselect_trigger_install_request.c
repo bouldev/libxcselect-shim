@@ -1,11 +1,12 @@
 #include <xcselect.h>
+#include <os/log.h>
+#include <libproc.h>
 
 XC_EXPORT
 bool xcselect_trigger_install_request(const char *tool_name)
 {
 	// Never return false except CoreFoundation missing or not callable
-	return true;
-/*
+#if TARGET_OS_OSX
 	typedef const void * CFDictionaryRef;
 	typedef const void * CFAllocatorRef;
 	typedef const void * CFStringRef;
@@ -32,9 +33,9 @@ bool xcselect_trigger_install_request(const char *tool_name)
 	SInt32 (*CFMessagePortSendRequest)(CFMessagePortRef remote, SInt32 msgid, CFDataRef data, CFTimeInterval sendTimeout, CFTimeInterval rcvTimeout, CFStringRef replyMode, CFDataRef *returnData);
 	void (*CFRelease)(CFTypeRef cf);
 
-	void *buf, *parent_process;
+	char buf[512] = {0};
 	pid_t pid, ppid;
-	char dst[4096];
+	char dst[512] = {0};
 	os_log_t log_clt_install;
 
 	CFMutableDictionaryRef xc_dict;
@@ -65,9 +66,10 @@ bool xcselect_trigger_install_request(const char *tool_name)
 		CFMessagePortSendRequest = (SInt32 (*)(CFMessagePortRef remote, SInt32 msgid, CFDataRef data, CFTimeInterval sendTimeout, CFTimeInterval rcvTimeout, CFStringRef replyMode, CFDataRef *returnData))CFFunctionCall;
 		CFFunctionCall = lazyCFSymbol("CFRelease");
 	}
-	if (CFFunctionCall)
-		CFRelease = (void (*)(CFTypeRef cf)CFFunctionCall;
+	if (CFFunctionCall) {
+		CFRelease = (void (*)(CFTypeRef cf))CFFunctionCall;
 
+/*	FIXME: Abort Trap: 6 Due to memcpy() and os_log()
 		memcpy(buf, "<unknown>", sizeof(buf));
 		pid = getpid();
 		proc_pidpath(pid, buf, 0x1000);
@@ -77,9 +79,33 @@ bool xcselect_trigger_install_request(const char *tool_name)
 		log_clt_install = os_log_create("com.apple.dt.CommandLineTools.installondemand", "trace");
 		os_log(log_clt_install, "Command Line Tools installation request from '%s' (PID %d), parent process '%s' (parent PID %d)", buf, pid, dst, ppid);
 		os_release(log_clt_install);
+*/
 		xc_dict = CFDictionaryCreateMutable(NULL, 0, NULL, NULL);
 		xc_tool_name_label = CFStringCreateWithCString(NULL, "tool-name", 0);
 		xc_tool_name = CFStringCreateWithCString(NULL, tool_name, 0);
 		CFDictionarySetValue(xc_dict, xc_tool_name_label, xc_tool_name);
-*/
+		CFErrorRef errorOutput;
+		CFDataRef pData = CFPropertyListCreateData(NULL, xc_dict, 200, 0, &errorOutput);
+		CFRelease(xc_tool_name);
+		CFRelease(xc_tool_name_label);
+		CFRelease(xc_dict);
+		if (pData) {
+			CFStringRef installondemandString = CFStringCreateWithCString(NULL, "com.apple.dt.CommandLineTools.installondemand", 0);
+			CFMessagePortRef port = CFMessagePortCreateRemote(0, installondemandString);
+			if (port) {
+				SInt32 stat = CFMessagePortSendRequest(port, 0, pData, 5.0, 5.0, NULL, NULL);
+				CFRelease(pData);
+				CFRelease(installondemandString);
+				CFRelease(port);
+				return stat == 0;
+			}
+			CFRelease(pData);
+			CFRelease(installondemandString);
+		}
+	}
+#else
+// TODO: Trigger APT/dpkg for installation on iOS
+#define CFFunctionCall true
+#endif
+	return (CFFunctionCall);
 }
