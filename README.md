@@ -4,7 +4,7 @@ WIP reimplementation of Xcode's libxcselect and related CLI tools.
 
 ## Current status
 
-- Compiles
+- Compiles on/for macOS and iOS
 
 - An already working config feature
 
@@ -25,3 +25,7 @@ WIP reimplementation of Xcode's libxcselect and related CLI tools.
 - Configurable functions
     - xcselect_bundle_is_developer_tool
     - xcselect_developer_dir_matches_path
+
+- Modifications
+    - xcselect_host_sdk_path now reads SDKROOT
+    - (TODO) xcselect_trigger_install_request triggers APT to install requested packages on non-macOS
