@@ -181,7 +181,7 @@ bool xcselect_trigger_install_request(const char *tool_name);
  *                      requires Xcode installation.
  */
 XC_EXPORT
-void xcselect_invoke_xcrun(char *tool_name, int argc, char * __nullable argv[], bool require_xcode);
+void xcselect_invoke_xcrun(const char *tool_name, int argc, char * __nullable argv[], bool require_xcode);
 
 #ifdef _XC_INTN
 #ifndef BUNDLE_SEPARATOR

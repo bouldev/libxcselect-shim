@@ -3,7 +3,7 @@
 extern int _xpc_runtime_is_app_sandboxed(void);
 
 XC_EXPORT
-void xcselect_invoke_xcrun(char *tool_name, int argc, char *argv[], bool require_xcode) {
+void xcselect_invoke_xcrun(const char *tool_name, int argc, char *argv[], bool require_xcode) {
 	if (_xpc_runtime_is_app_sandboxed()) {
 		fwrite("xcrun: error: cannot be used within an App Sandbox.\n", 52, 1, stderr);
 		exit(1);

@@ -1,8 +1,8 @@
 XCSELECT_VER = 2384
 
 PREFIX  := /usr
-CFLAGS  := -D_XC_INTN -DXCSELECT_VER=\"$(XCSELECT_VER)\" -I.
-LDFLAGS := -dynamiclib
+CFLAGS  := -D_XC_INTN -DXCSELECT_VER=\"$(XCSELECT_VER)\" -I. -std=c99
+LDFLAGS += -dynamiclib
 
 ifeq ($(shell sysctl -n hw.product | grep "Mac" &> /dev/null && echo 0), 0)
 CC	:= xcrun --sdk iphoneos cc
