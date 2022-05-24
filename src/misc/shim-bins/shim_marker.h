@@ -8,3 +8,5 @@ struct xcrun_shim_section_header
 	uint64_t message;
 	uint64_t message2;
 };
+
+#endif

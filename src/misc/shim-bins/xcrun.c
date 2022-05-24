@@ -19,7 +19,6 @@ void main(int argc, char *argv[])
 	else
 		xc_tool = tool_name;
 
-	xcselect_invoke_xcrun(xc_tool, argc - 1, argv + 1,
-			REQUIRE_XCODE ? true : false);
+	xcselect_invoke_xcrun(xc_tool, argc - 1, argv + 1, false);
 }
 #pragma clang diagnostic pop

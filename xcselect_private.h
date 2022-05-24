@@ -18,7 +18,7 @@
 #pragma clang diagnostic ignored "-Wnullability-completeness"
 
 #define XC_EXPORT OS_EXPORT
-#define XC_HIDDEN __attribute__((visibility("hidden")))
+#define XC_HIDDEN //__attribute__((visibility("hidden")))
 
 #ifdef _XC_INTN
 #ifndef XCSELECT_VER
