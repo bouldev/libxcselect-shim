@@ -1,7 +1,7 @@
 [x] libxcselect.dylib
 [ ] libxcrun.dylib
-[ ] xcrun
+[x] xcrun
 [ ] xcode-select
 [ ] xcodebuild (maybe?)
-[ ] wrapper tools go through xcselect_invoke_xcrun under /usr/bin
+[x] wrapper tools go through xcselect_invoke_xcrun under /usr/bin
 [ ] trigger install request through APT

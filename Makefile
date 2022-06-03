@@ -26,7 +26,7 @@ CFLAGS += -g -O0
 endif
 
 all:
-	$(CC) $(CFLAGS) src/libxcselect/*.c $(LDFLAGS) \
+	$(CC) $(CFLAGS) src/libxcselect/*.c src/misc/is_path_xcrun_shim.c $(LDFLAGS) \
 		-Wl,-install_name,$(PREFIX)/lib/libxcselect.dylib \
 		-Wl,-current_version,1.0.0,-compatibility_version,1.0.0,-source_version,$(XCSELECT_VER) \
 		-o libxcselect.dylib -Wl,-no_encryption

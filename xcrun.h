@@ -10,7 +10,7 @@
 #define XCRUN_VER "59"
 
 XC_EXPORT char *xcrun_get_version(void);
-XC_EXPORT void *xcrun_iter_manpaths(const char* devpath, const char* sdkname, const char *path);
+XC_EXPORT void xcrun_iter_manpaths(const char* devpath, const char* sdkname, const char *path);
 XC_EXPORT int xcrun_main(int argc, char *argv[]);
 XC_EXPORT void *xcrun_set_unknown_utility_handler(const void *block_invoke);
 
